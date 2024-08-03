@@ -18,6 +18,8 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <style>
       .form-label {
         font-weight: 500;
@@ -87,7 +89,6 @@
               <input
                 id="psw"
                 type="password"
-                autocomplete="password"
                 class="form-control"
                 name="psw"
                 placeholder="Set Password"
@@ -138,6 +139,10 @@
               <option value="creator">Creator</option>
               <option value="admin">Admin</option>
             </select>
+            <div
+              class="g-recaptcha"
+              data-sitekey="6LcYyx4qAAAAAHywJ2e28HdWdbGbYxeoDpQSV2Zd"
+            ></div>
             <div class="text-center mb-2">
               <button type="submit" class="btn btn-danger w-100">
                 Register
@@ -250,12 +255,32 @@
       });
 
       // Intercept form submission
-      function processForm(event) {
+      async function processForm(event) {
         event.preventDefault();
         const uname = document.getElementById("uname");
         const psw = document.getElementById("psw");
         const email = document.getElementById("email");
         const role = document.getElementById("role").value;
+        const recaptchaResponse = grecaptcha.getResponse();
+
+        const verifyCaptcha = await fetch("/verify-captcha", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            recaptchaResponse,
+          }),
+        });
+        const captchaResponse = await verifyCaptcha.json();
+
+        if (!captchaResponse.success) {
+          document.getElementById("error").innerText =
+            "reCAPTCHA verification failed. Please try again.";
+          grecaptcha.reset();
+          return;
+        }
+
         var data = JSON.stringify({
           name: uname.value,
           password: psw.value,
