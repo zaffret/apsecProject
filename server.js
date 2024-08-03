@@ -11,7 +11,7 @@ const cors = require("cors");
 
 mongoose.set("strictQuery", true);
 
-mongoose.connect(process.env.DB_CONNECT).then(() => {
+mongoose.connect(process.'mongodb+srv://zaffre149:wyvsdZzs2nXKtPF1@cluster0.amsmt3l.mongodb.net/project?retryWrites=true&w=majority&appName=Cluster0').then(() => {
   console.log("MongoDB connected...");
 });
 
