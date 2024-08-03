@@ -36,6 +36,26 @@ app.use("", memberRoutes);
 app.use("", creatorRoutes);
 app.use("", adminRoutes);
 
+app.post("/verify-captcha", (req, res) => {
+  const secretKey = process.env.CAPTCHA_SECRET_KEY;
+  const token = req.body.recaptchaResponse;
+  const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
+
+  fetch(url, {
+    method: "post",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+    },
+  })
+    .then((response) => response.json())
+    .then((google_response) => {
+      res.json(google_response);
+    })
+    .catch((error) => {
+      res.json({ error: error });
+    });
+});
+
 // const sslOptions = {
 //   key: fs.readFileSync(path.join(__dirname, "key.pem")),
 //   cert: fs.readFileSync(path.join(__dirname, "cert.pem")),
