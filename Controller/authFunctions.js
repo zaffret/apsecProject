@@ -101,7 +101,7 @@ const userLogin = async (req, role, res) => {
         email: user.email,
       },
       process.env.APP_SECRET,
-      { expiresIn: "3 days" }
+      { expiresIn: "80s" }
     );
 
     let result = {
