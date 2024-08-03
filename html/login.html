@@ -126,10 +126,10 @@
               class="g-recaptcha"
               data-sitekey="6LcYyx4qAAAAAHywJ2e28HdWdbGbYxeoDpQSV2Zd"
             ></div>
-            <div class="text-center mb-2">
+            <div class="text-center mb-2 mt-3">
               <button type="submit" class="btn btn-danger w-100">Login</button>
             </div>
-            <div class="text-center mt-3" style="font-size: 0.85em">
+            <div class="text-center" style="font-size: 0.85em">
               <span
                 >Don't have an account? <a href="index.html">Register</a></span
               >
@@ -261,7 +261,7 @@
           }
         });
 
-        xhr.open("POST", "http://localhost:5000/" + role + "-login");
+        xhr.open("POST", "https://thuhtet.com/" + role + "-login");
         xhr.setRequestHeader("Content-Type", "application/json");
 
         xhr.send(data);
