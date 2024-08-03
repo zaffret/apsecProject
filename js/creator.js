@@ -1,4 +1,13 @@
-const jwt_decode = require("jwt-decode");
+function base64Decode(str) {
+  return decodeURIComponent(
+    atob(str)
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+}
 
 function logoutUser(event) {
   localStorage.removeItem("token");
@@ -7,22 +16,23 @@ function logoutUser(event) {
   window.location.href = "login.html";
 }
 
+const uname = localStorage.getItem("uname");
 const token = localStorage.getItem("token");
 const role = localStorage.getItem("role");
-const uname = localStorage.getItem("uname");
 
 function checkTokenExpiry() {
   const token = localStorage.getItem("token");
 
   if (token) {
-    const decodedToken = jwt_decode(token); // Use a library like `jwt-decode`
+    const payloadBase64 = token.split(".")[1];
+    const decodedPayload = JSON.parse(base64Decode(payloadBase64));
     const currentTime = Date.now() / 1000; // Get current time in seconds
 
-    if (decodedToken.exp < currentTime) {
+    if (decodedPayload.exp < currentTime) {
       alert("Your session has expired. Please log in again.");
+      localStorage.removeItem("uname");
       localStorage.removeItem("token");
       localStorage.removeItem("role");
-      localStorage.removeItem("uname");
       window.location.href = "login.html";
     }
   }
