@@ -1,6 +1,3 @@
-const https = require("https");
-const fs = require("fs");
-const path = require("path");
 const mongoose = require("mongoose");
 const express = require("express");
 require("dotenv").config();
