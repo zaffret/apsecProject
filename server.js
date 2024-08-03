@@ -28,6 +28,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "html")));
+app.use('/js', express.static(path.join(__dirname, "js")));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("", userRoutes);
