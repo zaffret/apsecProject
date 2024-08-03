@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const express = require("express");
 require("dotenv").config();
 
-const userRoutes = require("./public/routes/userRoutes");
-const memberRoutes = require("./public/routes/memberRoutes");
-const creatorRoutes = require("./public/routes/creatorRoutes");
-const adminRoutes = require("./public/routes/adminRoutes");
+const userRoutes = require(".userRoutes");
+const memberRoutes = require(".memberRoutes");
+const creatorRoutes = require(".creatorRoutes");
+const adminRoutes = require(".adminRoutes");
 
 const cors = require("cors");
 
