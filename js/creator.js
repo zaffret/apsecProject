@@ -353,6 +353,8 @@ document.addEventListener("DOMContentLoaded", () => {
   populateChannelsDropdown();
 });
 
+setInterval(checkTokenExpiry, 60000);
+
 initializePage().then((videos) => {
   displayVideos(videos);
 });
