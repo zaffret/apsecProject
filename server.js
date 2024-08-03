@@ -21,7 +21,7 @@ const app = express();
 
 const PORT = 5000;
 const corsOptions = {
-  origin: "https://thuhtet.com",
+  origin: "https://www.thuhtet.com",
   methods: ["GET", "POST", "PUT", "DELETE"],
 };
 
