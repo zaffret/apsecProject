@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
   logout.addEventListener("click", logoutUser);
 });
 
-setInterval(checkTokenExpiry, 10000);
+setInterval(checkTokenExpiry, 60000);
 
 initializePage().then((videos) => {
   displayVideos(videos);
