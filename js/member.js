@@ -15,7 +15,7 @@ async function initializePage() {
     window.location.href = "login.html";
   } else {
     try {
-      const response = await fetch("http://localhost:5000/member-getVideos", {
+      const response = await fetch("https://thuhtet.com/member-getVideos", {
         method: "GET",
         headers: {
           Authorization: "Bearer " + token,
