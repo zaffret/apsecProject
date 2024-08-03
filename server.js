@@ -45,9 +45,9 @@ app.use("", adminRoutes);
 //   );
 // });
 
-// app.listen(PORT, () => {
-//   console.log(`HTTP server running on port ${PORT}`);
-//   console.log(
-//     `Click here to access  Register Page: http://localhost:${PORT}/html/register.html`
-//   );
-// });
+app.listen(PORT, () => {
+  console.log(`HTTP server running on port ${PORT}`);
+  console.log(
+    `Click here to access  Register Page: http://localhost:${PORT}/html/register.html`
+  );
+});
