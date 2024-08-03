@@ -17,7 +17,7 @@ mongoose.connect(process.env.DB_CONNECT).then(() => {
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 const corsOptions = {
   origin: "https://127.0.0.1:5000",
   methods: ["GET", "POST", "PUT", "DELETE"],
