@@ -11,21 +11,21 @@ const token = localStorage.getItem("token");
 const role = localStorage.getItem("role");
 const uname = localStorage.getItem("uname");
 
-function checkTokenExpiry(token) {
-  const decodedToken = jwt_decode(token);
-  const currentTime = Date.now() / 1000;
+function checkTokenExpiry() {
+  const token = localStorage.getItem("token");
 
-  if (decodedToken.exp < currentTime) {
-    alert("Your session has expired. Please log in again.");
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("uname");
-    window.location.href = "login.html";
+  if (token) {
+    const decodedToken = jwt_decode(token); // Use a library like `jwt-decode`
+    const currentTime = Date.now() / 1000; // Get current time in seconds
+
+    if (decodedToken.exp < currentTime) {
+      alert("Your session has expired. Please log in again.");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("uname");
+      window.location.href = "login.html";
+    }
   }
-}
-
-if (token) {
-  checkTokenExpiry(token);
 }
 
 async function initializePage() {
