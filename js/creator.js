@@ -20,7 +20,7 @@ async function initializePage() {
     localStorage.removeItem("role");
   } else {
     try {
-      const response = await fetch("http://localhost:5000/creator-getVideos", {
+      const response = await fetch("https://thuhtet.com/creator-getVideos", {
         method: "GET",
         headers: {
           Authorization: "Bearer " + token,
