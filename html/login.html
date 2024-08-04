@@ -19,7 +19,6 @@
       referrerpolicy="no-referrer"
     />
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
     <style>
       .form-label {
         font-weight: 500;
@@ -39,6 +38,39 @@
       .valid .bi-x-circle-fill,
       .invalid .bi-check-circle-fill {
         display: none;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 10px;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
       }
     </style>
   </head>
@@ -86,30 +118,25 @@
                 <i class="bi bi-check-circle-fill"></i>
                 <i class="bi bi-x-circle-fill"></i> At least 8 characters
               </div>
-
               <div id="lowercase" class="invalid">
                 <i class="bi bi-check-circle-fill"></i>
                 <i class="bi bi-x-circle-fill"></i> At least one lowercase
                 letter
               </div>
-
               <div id="uppercase" class="invalid">
                 <i class="bi bi-check-circle-fill"></i>
                 <i class="bi bi-x-circle-fill"></i> At least one uppercase
                 letter
               </div>
-
               <div id="number" class="invalid">
                 <i class="bi bi-check-circle-fill"></i>
                 <i class="bi bi-x-circle-fill"></i> At least one number
               </div>
-
               <div id="specialChar" class="invalid">
                 <i class="bi bi-check-circle-fill"></i>
                 <i class="bi bi-x-circle-fill"></i> At least one special
                 character (eg. !@#$%^&*())
               </div>
-
               <div id="noSpaces" class="invalid">
                 <i class="bi bi-check-circle-fill"></i>
                 <i class="bi bi-x-circle-fill"></i> No spaces allowed
@@ -126,7 +153,7 @@
               class="g-recaptcha"
               data-sitekey="6LcYyx4qAAAAAHywJ2e28HdWdbGbYxeoDpQSV2Zd"
             ></div>
-            <div class="text-center mb-2 mt-3">
+            <div class="text-center mb-2">
               <button type="submit" class="btn btn-danger w-100">Login</button>
             </div>
             <div class="text-center" style="font-size: 0.85em">
@@ -141,6 +168,22 @@
         </div>
       </div>
     </div>
+
+    <div id="lockoutModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Account locked</h5>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger" role="alert">
+            Too many failed login attempts. Try again after
+            <span id="lockoutTime"></span>.
+          </div>
+          <div>Forgot your password? Try <a href="#">resetting</a></div>
+        </div>
+      </div>
+    </div>
+
     <script>
       const togglePassword = document.querySelector("#togglePassword");
       const password = document.querySelector("#psw");
@@ -198,49 +241,62 @@
 
       password.addEventListener("input", function () {
         passwordValidation.style.display = "block";
-
         if (!password.value) {
           passwordValidation.style.display = "none";
         }
         validatePassword();
       });
 
-      // Intercept form submission
+      let lockoutInterval;
+
+      function showModal(lockoutEndTime) {
+        document.getElementById("lockoutModal").style.display = "block";
+        const lockoutTimeElement = document.getElementById("lockoutTime");
+        const currentTime = new Date().getTime();
+        let timeRemaining = lockoutEndTime - currentTime;
+
+        function updateLockoutTime() {
+          if (timeRemaining <= 0) {
+            clearInterval(lockoutInterval);
+            hideModal();
+          } else {
+            timeRemaining -= 1000;
+            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+            const minutes = Math.floor(
+              (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
+            );
+            lockoutTimeElement.textContent = `${minutes} minute${
+              minutes !== 1 ? "s" : ""
+            } and ${seconds} second${seconds !== 1 ? "s" : ""}`;
+          }
+        }
+
+        updateLockoutTime();
+        lockoutInterval = setInterval(updateLockoutTime, 1000);
+      }
+
+      function hideModal() {
+        clearInterval(lockoutInterval);
+        document.getElementById("lockoutModal").style.display = "none";
+      }
+
       async function processForm(event) {
         event.preventDefault();
+
         const uname = document.getElementById("uname");
         const psw = document.getElementById("psw");
         const role = document.getElementById("role").value;
-        const recaptchaResponse = grecaptcha.getResponse();
 
-        const verifyCaptcha = await fetch("/verify-captcha", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            recaptchaResponse,
-          }),
-        });
-        const captchaResponse = await verifyCaptcha.json();
-
-        if (!captchaResponse.success) {
-          document.getElementById("error").innerText =
-            "reCAPTCHA verification failed. Please try again.";
-          grecaptcha.reset();
-          return;
-        }
-
-        var data = JSON.stringify({
+        const data = JSON.stringify({
           name: uname.value,
           password: psw.value,
         });
 
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
 
         xhr.addEventListener("readystatechange", function () {
           if (this.readyState === 4) {
-            var response = JSON.parse(this.responseText);
+            const response = JSON.parse(this.responseText);
             if (this.status === 200) {
               localStorage.setItem("token", response.token);
               localStorage.setItem("role", role);
@@ -255,13 +311,15 @@
               } else {
                 window.location.href = "user.html";
               }
-            } else {
-              document.getElementById("error").innerText = response.message;
+            } else if (this.status === 423) {
+              showModal(response.lockoutEndTime);
             }
+            const errorSpan = document.getElementById("error");
+            errorSpan.innerText = response.message;
           }
         });
 
-        xhr.open("POST", "https://thuhtet.com/" + role + "-login");
+        xhr.open("POST", "http://localhost:5000/" + role + "-login");
         xhr.setRequestHeader("Content-Type", "application/json");
 
         xhr.send(data);
