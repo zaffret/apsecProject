@@ -191,16 +191,16 @@
           <div class="text ms-1 mt-1" style="font-size: 0.9em">
             <span id="error" class="text-danger"></span>
           </div>
-          <!-- Custom Modal -->
+   
           <div id="successModal" class="modal">
             <div class="modal-content">
-              <span class="modal-close">&times;</span>
+        
               <h5>Registration Successful</h5>
               <p>Registration successful! Please check your email for the verification link.</p>
-              <button id="modalCloseBtn" class="btn btn-secondary">Close</button>
+
             </div>
           </div>
-          <!-- End Custom Modal -->
+  
         </div>
       </div>
     </div>
@@ -337,24 +337,7 @@
 
             if (this.status >= 200 && this.status < 300) {
               var modal = document.getElementById('successModal');
-              var span = document.getElementsByClassName("modal-close")[0];
-              var closeBtn = document.getElementById('modalCloseBtn');
-
               modal.style.display = "block";
-
-              span.onclick = function() {
-                modal.style.display = "none";
-              }
-
-              closeBtn.onclick = function() {
-                modal.style.display = "none";
-              }
-
-              window.onclick = function(event) {
-                if (event.target == modal) {
-                  modal.style.display = "none";
-                }
-              }
             } else {
               document.getElementById("error").innerText = response.message;
             }
