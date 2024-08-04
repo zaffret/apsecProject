@@ -289,6 +289,25 @@
         const uname = document.getElementById("uname");
         const psw = document.getElementById("psw");
         const role = document.getElementById("role").value;
+        const recaptchaResponse = grecaptcha.getResponse();
+
+        const verifyCaptcha = await fetch("/verify-captcha", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            recaptchaResponse,
+          }),
+        });
+        const captchaResponse = await verifyCaptcha.json();
+
+        if (!captchaResponse.success) {
+          document.getElementById("error").innerText =
+            "reCAPTCHA verification failed. Please try again.";
+          grecaptcha.reset();
+          return;
+        }
 
         const data = JSON.stringify({
           name: uname.value,
