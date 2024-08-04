@@ -226,7 +226,7 @@
         validatePassword();
       });
 
-      // New code for email validation
+
       const emailInput = document.getElementById("email");
       const emailValidation = document.getElementById("emailCheck");
       const emailRule = {
@@ -300,7 +300,7 @@
             }
           }
         });
-        xhr.open("POST", "https://thuhtet/" + role + "-register");
+        xhr.open("POST", "https://thuhtet.com/" + role + "-register");
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(data);
       }
