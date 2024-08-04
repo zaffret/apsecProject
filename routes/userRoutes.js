@@ -5,6 +5,7 @@ const {
   userLogin,
   checkRole,
   userAuth,
+  sendVerificationEmail,
 } = require("../Controller/authFunctions");
 
 const {
@@ -15,6 +16,10 @@ const {
 } = require("../Controller/userFunctions");
 
 const { getALlVideos } = require("../Controller/videoFunctions");
+
+router.post("/send-verification-email", async (req, res) => {
+  await sendVerificationEmail(req.body, res);
+});
 
 router.get("/user-publilc", (req, res) => {
   return res.status(200).json({ message: "Public Domain" });
