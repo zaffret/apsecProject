@@ -10,7 +10,7 @@ router.get("/verify-email", async (req, res) => {
   const token = req.query.token;
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.APP_SECRET);
     const { email, name, password, role } = decoded;
 
     const hashedPassword = await bcrypt.hash(password, 12);
