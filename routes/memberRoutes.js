@@ -5,6 +5,7 @@ const {
   userLogin,
   checkRole,
   userAuth,
+  sendVerificationEmail,
 } = require("../Controller/authFunctions");
 
 const {
@@ -32,6 +33,10 @@ const {
   getVideoByChannel,
   getVideoByCreator,
 } = require("../Controller/videoFunctions");
+
+router.post("/send-verification-email", async (req, res) => {
+  await sendVerificationEmail(req.body, res);
+});
 
 router.post("/member-register", async (req, res) => {
   await userSignup(req.body, "member", res);
