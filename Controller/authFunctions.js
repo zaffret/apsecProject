@@ -92,8 +92,21 @@ const userLogin = async (req, role, res) => {
     });
   }
 
+  const currentTime = new Date().getTime();
+
+  if (user.lockedUntil && currentTime < user.lockedUntil.getTime()) {
+    return res.status(423).json({
+      message: "",
+      lockouEndTime: user.lockedUntil.getTime(),
+    });
+  }
+
   let isMatch = await bcrypt.compare(password, user.password);
   if (isMatch) {
+    user.failedLoginAttempts = 0;
+    user.lockedUntil = null;
+    await user.save();
+
     let token = jwt.sign(
       {
         role: user.role,
@@ -101,7 +114,7 @@ const userLogin = async (req, role, res) => {
         email: user.email,
       },
       process.env.APP_SECRET,
-      { expiresIn: "3m" }
+      { expiresIn: "3 days" }
     );
 
     let result = {
@@ -117,11 +130,25 @@ const userLogin = async (req, role, res) => {
       message: "Logged in successfully",
     });
   } else {
-    return res.status(403).json({
-      message: "Incorrect username or password",
-    });
+    user.failedLoginAttempts += 1;
+    if (user.failedLoginAttempts >= 4) {
+      const lockoutDuration = 1 * 60 * 1000;
+      user.lockedUntil = new Date(currentTime + lockoutDuration);
+      user.failedLoginAttempts = 0;
+      await user.save();
+      return res.status(423).json({
+        message: "",
+        lockoutEndTime: user.lockedUntil.getTime(),
+      });
+    }
+    await user.save();
   }
+
+  return res.status(403).json({
+    message: "Incorrect credentials",
+  });
 };
+
 
 const userAuth = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
