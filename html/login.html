@@ -153,7 +153,7 @@
               class="g-recaptcha"
               data-sitekey="6LcYyx4qAAAAAHywJ2e28HdWdbGbYxeoDpQSV2Zd"
             ></div>
-            <div class="text-center mb-2">
+            <div class="text-center mt-3 mb-2">
               <button type="submit" class="btn btn-danger w-100">Login</button>
             </div>
             <div class="text-center" style="font-size: 0.85em">
@@ -256,7 +256,7 @@
         let timeRemaining = lockoutEndTime - currentTime;
 
         function updateLockoutTime() {
-          if (timeRemaining <= 0) {
+          if (timeRemaining = 0) {
             clearInterval(lockoutInterval);
             hideModal();
           } else {
