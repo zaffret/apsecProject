@@ -55,9 +55,7 @@ const sendVerificationEmail = async (req, res) => {
       },
     });
 
-    const verificationLink = `https://thuhtet.com:${
-      process.env.PORT || 3000
-    }/verify-email?token=${token}`;
+    const verificationLink = `https://thuhtet.com/verify-email?token=${token}`;
 
     const mailOptions = {
       from: "thuhtet149@gmail.com",
