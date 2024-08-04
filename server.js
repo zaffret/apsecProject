@@ -72,6 +72,6 @@ app.post("/verify-captcha", (req, res) => {
 app.listen(PORT, () => {
   console.log(`HTTP server running on port ${PORT}`);
   console.log(
-    `Click here to access  Register Page: http://localhost:${PORT}/html/index.html`
+    `Click here to access  Register Page: https://thuhtet.com/html/index.html`
   );
 });
