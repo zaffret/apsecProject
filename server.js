@@ -7,7 +7,7 @@ const userRoutes = require("./routes/userRoutes");
 const memberRoutes = require("./routes/memberRoutes");
 const creatorRoutes = require("./routes/creatorRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-
+const verifyRoutes = require("./routes/verifyRoutes");
 
 const cors = require("cors");
 
@@ -35,6 +35,7 @@ app.use("", userRoutes);
 app.use("", memberRoutes);
 app.use("", creatorRoutes);
 app.use("", adminRoutes);
+app.use("",verifyRoutes);
 
 app.post("/verify-captcha", (req, res) => {
   const secretKey = process.env.CAPTCHA_SECRET_KEY;
