@@ -55,7 +55,7 @@ const sendVerificationEmail = async (req, res) => {
       },
     });
 
-    const verificationLink = `https://localhost:${
+    const verificationLink = `https://thuhtet.com:${
       process.env.PORT || 3000
     }/verify-email?token=${token}`;
 
