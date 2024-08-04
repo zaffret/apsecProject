@@ -143,7 +143,7 @@
               class="g-recaptcha"
               data-sitekey="6LcYyx4qAAAAAHywJ2e28HdWdbGbYxeoDpQSV2Zd"
             ></div>
-            <div class="text-center mb-2 mt-3">
+            <div class="text-center mb-2">
               <button type="submit" class="btn btn-danger w-100">
                 Register
               </button>
@@ -156,6 +156,12 @@
           </form>
           <div class="text ms-1 mt-1" style="font-size: 0.9em">
             <span id="error" class="text-danger"></span>
+          </div>
+          <div id="success-message" class="text-center d-none mt-3">
+            <p>
+              Registration successful! Please check your email for the
+              verification link.
+            </p>
           </div>
         </div>
       </div>
@@ -226,7 +232,6 @@
         validatePassword();
       });
 
-
       const emailInput = document.getElementById("email");
       const emailValidation = document.getElementById("emailCheck");
       const emailRule = {
@@ -254,7 +259,6 @@
         validateEmail();
       });
 
-      // Intercept form submission
       async function processForm(event) {
         event.preventDefault();
         const uname = document.getElementById("uname");
@@ -285,6 +289,7 @@
           name: uname.value,
           password: psw.value,
           email: email.value,
+          role: role,
         });
         var xhr = new XMLHttpRequest();
         xhr.addEventListener("readystatechange", function () {
@@ -293,14 +298,16 @@
             var response = JSON.parse(this.responseText);
 
             if (this.status >= 200 && this.status < 300) {
-              alert(response.message);
-              window.location.href = "login.html";
+              document.getElementById("registerForm").classList.add("d-none");
+              document
+                .getElementById("success-message")
+                .classList.remove("d-none");
             } else {
               document.getElementById("error").innerText = response.message;
             }
           }
         });
-        xhr.open("POST", "https://thuhtet.com/" + role + "-register");
+        xhr.open("POST", "https://localhost:5001/send-verification-email");
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(data);
       }
