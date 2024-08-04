@@ -57,17 +57,7 @@ app.post("/verify-captcha", (req, res) => {
     });
 });
 
-// const sslOptions = {
-//   key: fs.readFileSync(path.join(__dirname, "key.pem")),
-//   cert: fs.readFileSync(path.join(__dirname, "cert.pem")),
-// };
 
-// https.createServer(sslOptions, app).listen(PORT, () => {
-//   console.log(`HTTPS server running on port ${PORT}`);
-//   console.log(
-//     `Click here to access  Register Page: https://localhost:${PORT}/html/register.html`
-//   );
-// });
 
 app.listen(PORT, () => {
   console.log(`HTTP server running on port ${PORT}`);
