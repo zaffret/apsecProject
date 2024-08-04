@@ -154,7 +154,7 @@ const userLogin = async (req, role, res) => {
 
   if (!user) {
     return res.status(404).json({
-      message: "Member not found. Invalid login credentials.",
+      message: "Member not found.",
     });
   }
 
