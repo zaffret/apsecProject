@@ -256,15 +256,18 @@
         let timeRemaining = lockoutEndTime - currentTime;
 
         function updateLockoutTime() {
-          if (timeRemaining = 0) {
+          if (timeRemaining <= 0) {
             clearInterval(lockoutInterval);
             hideModal();
           } else {
             timeRemaining -= 1000;
             const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-            const minutes = Math.floor(
+            let minutes = Math.floor(
               (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
             );
+            if (seconds<0) {
+              seconds = 0
+            };
             lockoutTimeElement.textContent = `${minutes} minute${
               minutes !== 1 ? "s" : ""
             } and ${seconds} second${seconds !== 1 ? "s" : ""}`;
