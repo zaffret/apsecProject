@@ -1,12 +1,86 @@
 const bcrypt = require("bcrypt");
+const { User } = require("../Database/data");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const { User } = require("../Database/data");
+const nodemailer = require("nodemailer");
 const {
   isNotString,
   isNotEmail,
   isNotPsw,
 } = require("../validation/validateInputs");
+
+const sendVerificationEmail = async (req, res) => {
+  if (isNotString(req.name, "name")) {
+    return res.status(400).json({
+      message: isNotString(req.name, "name"),
+    });
+  }
+
+  if (isNotEmail(req.email)) {
+    return res.status(400).json({
+      message: isNotEmail(req.email),
+    });
+  }
+
+  if (isNotPsw(req.password)) {
+    return res.status(400).json({
+      message: isNotPsw(req.password),
+    });
+  }
+
+  try {
+    let emailNotRegistered = await validateEmail(req.email);
+    if (!emailNotRegistered) {
+      return res.status(400).json({
+        message: "Email is already registered",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        email: req.email,
+        name: req.name,
+        password: req.password,
+        role: req.role,
+      },
+      process.env.APP_SECRET,
+      { expiresIn: "3m" }
+    );
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "thuhtet149@gmail.com",
+        pass: "rjpy yyof fpys seef",
+      },
+    });
+
+    const verificationLink = `https://localhost:${
+      process.env.PORT || 3000
+    }/verify-email?token=${token}`;
+
+    const mailOptions = {
+      from: "thuhtet149@gmail.com",
+      to: req.email,
+      subject: "Email Verification",
+      text: `Click the link to verify your email: ${verificationLink}`,
+    };
+
+    transporter.sendMail(mailOptions, (error) => {
+      if (error) {
+        return res.status(500).json(error);
+      } else {
+        return res.status(200).json({
+          message: "Verification email sent. Please check your email.",
+        });
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+};
 
 const userSignup = async (req, role, res) => {
   if (isNotString(req.name, "name")) {
@@ -149,7 +223,6 @@ const userLogin = async (req, role, res) => {
   });
 };
 
-
 const userAuth = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
   if (!authHeader) return res.status(403).json({ message: "Missing Token" });
@@ -179,4 +252,10 @@ const checkRole = (roles) => async (req, res, next) => {
   next();
 };
 
-module.exports = { userSignup, userLogin, checkRole, userAuth };
+module.exports = {
+  sendVerificationEmail,
+  userSignup,
+  userLogin,
+  checkRole,
+  userAuth,
+};
