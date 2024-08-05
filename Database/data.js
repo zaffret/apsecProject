@@ -37,7 +37,7 @@ const UserSchema = new Schema(
       type: Date,
       default: null,
     },
-    attemptResetAfter {
+    attemptResetAfter: {
       type: Date,
       default: null,
     },
