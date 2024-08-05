@@ -260,7 +260,6 @@ function showModal(lockoutEndTime) {
       clearInterval(lockoutInterval);
       hideModal();
     } else {
-      timeRemaining -= 1000;
       const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
       const minutes = Math.floor(
         (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
@@ -268,6 +267,7 @@ function showModal(lockoutEndTime) {
       lockoutTimeElement.textContent = `${minutes} minute${
         minutes !== 1 ? "s" : ""
       } and ${seconds} second${seconds !== 1 ? "s" : ""}`;
+      timeRemaining -= 1000;
     }
   }
 
@@ -279,6 +279,7 @@ function hideModal() {
   clearInterval(lockoutInterval);
   document.getElementById("lockoutModal").style.display = "none";
 }
+
 
 async function processForm(event) {
   event.preventDefault();
