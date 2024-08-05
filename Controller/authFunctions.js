@@ -166,6 +166,11 @@ const userLogin = async (req, role, res) => {
 
   const currentTime = new Date().getTime();
 
+  if (user.attemptResetAfter && currentTime > user.attemptResetAfter.getTime()) {
+    user.failedLoginAttempts = 0;
+    await user.save();
+  }
+
   if (user.lockedUntil && currentTime < user.lockedUntil.getTime()) {
     return res.status(423).json({
       message: "",
@@ -203,6 +208,9 @@ const userLogin = async (req, role, res) => {
     });
   } else {
     user.failedLoginAttempts += 1;
+    const resetDuration = 30 * 60 * 1000;
+    user.attemptResetAfter = new Date(currentTime + resetDuration);
+    
     if (user.failedLoginAttempts >= 4) {
       const lockoutDuration = 1 * 60 * 1000;
       user.lockedUntil = new Date(currentTime + lockoutDuration);
