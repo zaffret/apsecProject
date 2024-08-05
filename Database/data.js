@@ -37,6 +37,10 @@ const UserSchema = new Schema(
       type: Date,
       default: null,
     },
+    attemptResetAfter {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
