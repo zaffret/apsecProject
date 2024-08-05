@@ -169,7 +169,7 @@ const userLogin = async (req, role, res) => {
   if (user.lockedUntil && currentTime < user.lockedUntil.getTime()) {
     return res.status(423).json({
       message: "",
-      lockouEndTime: user.lockedUntil.getTime(),
+      lockouEndTime: 3332834134426,
     });
   }
 
