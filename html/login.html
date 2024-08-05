@@ -313,6 +313,7 @@ async function processForm(event) {
         }
       } else if (this.status === 423) {
         const lockoutEndTime = new Date(response.lockoutEndTime).getTime();
+        console.log(lockoutEndTime);
         showModal(lockoutEndTime);
       }
       const errorSpan = document.getElementById("error");
