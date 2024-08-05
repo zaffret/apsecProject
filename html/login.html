@@ -302,9 +302,10 @@
         if (!captchaResponse.success) {
           document.getElementById("error").innerText =
             "reCAPTCHA verification failed. Please try again.";
-          grecaptcha.reset();
+          
           return;
         }
+        grecaptcha.reset();
 
         const data = JSON.stringify({
           name: uname.value,
