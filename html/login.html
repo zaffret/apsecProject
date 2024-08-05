@@ -153,7 +153,7 @@
               class="g-recaptcha"
               data-sitekey="6LcYyx4qAAAAAHywJ2e28HdWdbGbYxeoDpQSV2Zd"
             ></div>
-            <div class="text-center mt-3 mb-2">
+            <div class="text-center mb-2">
               <button type="submit" class="btn btn-danger w-100">Login</button>
             </div>
             <div class="text-center" style="font-size: 0.85em">
@@ -259,16 +259,12 @@
           if (timeRemaining <= 0) {
             clearInterval(lockoutInterval);
             hideModal();
-            localStorage.removeItem("lockoutEndTime"); // Remove lockout end time from local storage
           } else {
-            timeRemaining -= 999;
+            timeRemaining -= 1000;
             const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-            let minutes = Math.floor(
+            const minutes = Math.floor(
               (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
             );
-            if (seconds < 0) {
-              seconds = 0;
-            }
             lockoutTimeElement.textContent = `${minutes} minute${
               minutes !== 1 ? "s" : ""
             } and ${seconds} second${seconds !== 1 ? "s" : ""}`;
@@ -290,25 +286,6 @@
         const uname = document.getElementById("uname");
         const psw = document.getElementById("psw");
         const role = document.getElementById("role").value;
-        const recaptchaResponse = grecaptcha.getResponse();
-
-        const verifyCaptcha = await fetch("/verify-captcha", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            recaptchaResponse,
-          }),
-        });
-        const captchaResponse = await verifyCaptcha.json();
-
-        if (!captchaResponse.success) {
-          document.getElementById("error").innerText =
-            "reCAPTCHA verification failed. Please try again.";
-          grecaptcha.reset();
-          return;
-        }
 
         const data = JSON.stringify({
           name: uname.value,
@@ -335,16 +312,14 @@
                 window.location.href = "user.html";
               }
             } else if (this.status === 423) {
-              const lockoutEndTime = new Date(response.lockoutEndTime).getTime();
-              localStorage.setItem("lockoutEndTime", lockoutEndTime); // Save lockout end time to local storage
-              showModal(lockoutEndTime);
+              showModal(response.lockoutEndTime);
             }
             const errorSpan = document.getElementById("error");
             errorSpan.innerText = response.message;
           }
         });
 
-        xhr.open("POST", "https://thuhtet.com/" + role + "-login");
+        xhr.open("POST", "http://localhost:5001/" + role + "-login");
         xhr.setRequestHeader("Content-Type", "application/json");
 
         xhr.send(data);
@@ -359,19 +334,6 @@
           const errorSpan = document.getElementById("error");
           errorSpan.innerText = "";
         });
-      });
-
-      // Check for lockout on page load
-      window.addEventListener("load", function () {
-        const lockoutEndTime = localStorage.getItem("lockoutEndTime");
-        if (lockoutEndTime) {
-          const currentTime = new Date().getTime();
-          if (currentTime < lockoutEndTime) {
-            showModal(lockoutEndTime);
-          } else {
-            localStorage.removeItem("lockoutEndTime");
-          }
-        }
       });
     </script>
   </body>
