@@ -80,7 +80,7 @@ async function createChannel(event) {
   const channelName = document.getElementById("channelName").value.trim();
 
   try {
-    const response = await fetch("http://localhost:5000/creator-startChannel", {
+    const response = await fetch("https://thuhtet.com/creator-startChannel", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -111,7 +111,7 @@ async function createChannel(event) {
 async function fetchChannels() {
   try {
     const response = await fetch(
-      "http://localhost:5000/creator-getChannelByCreator",
+      "https://thuhtet.com/creator-getChannelByCreator",
       {
         method: "POST",
         headers: {
@@ -158,7 +158,7 @@ async function populateChannelsDropdown() {
       videoGrid.innerHTML = "";
       try {
         const response = await fetch(
-          "http://localhost:5000/creator-getVideoByChannel",
+          "https://thuhtet.com/creator-getVideoByChannel",
           {
             method: "POST",
             headers: {
